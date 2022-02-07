@@ -13,18 +13,17 @@ Functions:
         return the stored letter
 """
 
-class letter():
+class letter_object():
     letter = ''
     state = ""
 
-    def letter(self, char, s):
+    def __init__(self, char, s):
         """
         Author: Zesheng Xu
         Date: Feb 6 2022
         Description: A constructor class to set parameters
         :param char: A single letter to be stored
         :param s: A string object with following 3 possibilities: non_exist, exist, confirmed
-                    non_exist: letter char do not exist in the word
                     exist: letter char exist but location unsure
                     confirmed: the letter char exist and its location is certain
         :return: none
