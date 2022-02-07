@@ -5,7 +5,7 @@ Functions:
 
 """
 
-from letter import letter
+from letter import letter_object
 from english_words import english_words_lower_alpha_set
 import numpy as np
 
@@ -17,15 +17,47 @@ def main():
 
     :return: none
     """
-    word = "skill"
+    word = "table"
     word_list = load_list()
 
+
     excluded = []  # excluded letter
-    certain = []  # a bool array to sure if a letter's location is certain or not
+    certain = [None,None,None,None,None]  # a bool array to sure if a letter's location is certain or not
+    guessed = []
     for i in range(0,5):
-        guess = np.random.choice(word_list)
+        if(len(word_list) > 0):
+            guess = np.random.choice(word_list)
+            guessed.append(guess)
+            if(guess == word):
+                print("Success on %s try, and the word is: %s"% ( i, guess))
+                return 0;
+            else:
+
+                for j in range(0,len(word)):
+                    if(guess[j] == word[j]):
+                        print('%s at location %s confirmed'% (guess[j],j))
+                        temp_letter = letter_object(guess[j], "confirmed")
+                        certain = letter_object_set(certain, temp_letter, j)
 
 
+                    elif (guess[j] in word):
+                        print('%s at location %s exists'% (guess[j], j))
+                        temp_letter = letter_object(guess[j], "exist")
+                        certain = letter_object_set(certain, temp_letter, j)
+
+
+                    else:
+                        if(guess[j] not in excluded):
+                            excluded.append(guess[j])
+            word_list = update_list(word_list, excluded, certain)
+        else:
+            print("This word is not within our dictionary")
+    print("Target",word)
+    print("Excluded",excluded)
+    print(guessed)
+    for i in certain:
+        if i != None:
+            print(i.get_letter(), i.get_state())
 
 def load_list():
     """
@@ -35,9 +67,11 @@ def load_list():
     :return list: An array of 5 letter string
     """
     list = []
+
     for word in english_words_lower_alpha_set:
         if len(word) == 5:
             list.append(word)
+
 
     return list
 
@@ -54,35 +88,47 @@ def update_list(list, excluded, certain):
     """
 
     updated_list = list
-    for word in updated_list:  # go through each word in the word list
-        removed = false  # bool variable to prevent double removal of the same word
+    count = 0
+    while count < len(updated_list):  # go through each word in the word list
+        word = updated_list[count]
+        removed = False  # bool variable to prevent double removal of the same word
         for letter in excluded:
-            if word.contains(letter) and not removed:  # if the word have excluded letters, we remove it from the list
-                updated_list.remove(word)
+            if letter in word and not removed:  # if the word have excluded letters, we remove it from the list
+                print("removed 0 ", word , "Had " ,letter)
+                updated_list.pop(count)
+                count -= 1
                 removed = True
                 break
         if not removed:
-            index = 0
-            for letter_2 in certain:
-                count = count_occurance(letter_2.get_letter(), certain)
-                if word.count(letter_2.get_letter()) != count:  # if the word does not have required number of
-                    # letters needed i.e build while we need 2 L
-                    updated_list.remove(word)
-                    removed = True
-                    break
-                if letter_2.get_state() == "exist":  # if the word do not have the needed letters
-                    if not word.contains(letter_2.get_letter()):
-                        updated_list.remove(word)
-                        removed = True
-                        break
-                if letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
-                    # location
-                    if not word[index] != letter_2.get_letter():
-                        updated_list.remove(word)
-                        removed = True
-                        break
-                index += 1
 
+            for letter_2 in certain:
+                if letter_2 is not None:
+                    letter_count = count_occurance(letter_2.get_letter(), certain)
+                    if letter_count > 1 and  word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
+                        # letters needed i.e build while we need 2 L
+                        print("removed 1 ", word, "looking for " ,letter_count , letter_2.get_letter() , "it had ",word.count(letter_2.get_letter())  )
+                        updated_list.pop(count)
+                        count -= 1
+                        break
+                    elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
+                        if not letter_2.get_letter() in word:
+                            print("removed 2 ", word,"Looking for" ,letter_2.get_letter())
+                            updated_list.pop(count)
+                            count -= 1
+                            break
+                    elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
+                        # location
+                        if word[certain.index(letter_2)] != letter_2.get_letter():
+                            print("removed 3 ", word , word[certain.index(letter_2)], letter_2.get_letter())
+                            updated_list.pop(count)
+                            count -= 1
+                            break
+
+        count += 1
+        print (count, len(updated_list))
+        if(count < 0):
+            print("Count is negative")
+            break
     return updated_list
 
 
@@ -98,9 +144,36 @@ def count_occurance(letter, letter_list):
 
     count = 0
     for temp in letter_list:  # goes through enough letter to get their char value and compare
-        if temp.get_letter() == letter:
+        if temp != None and temp.get_letter() == letter:
             count += 1
     return count
+
+def letter_object_set(certain_list, new_letter, index):
+    """
+    Author: Zesheng Xu
+    Date: Feb 7 2022
+    Description: systematically setting letter into certain_list, changing letter from exist to confirmed without
+        duplicating it
+    :param certain_list: list of letters that are in the target word
+    :param letter_obj: the letter that is being added
+    :param index: where the letter to be added
+    :return: the list after process
+    """
+
+
+
+    for i in range(0,len(certain_list)):
+        if certain_list[i] != None:
+            if certain_list[i].get_letter() == new_letter.get_letter() and certain_list[i].get_state() == "exist" \
+                    and new_letter.get_state() == "confirmed":
+                # if the new object is confirmed and we found a letter object that is only "exist", we know that this
+                # letter needs to be updated
+                certain_list[i] == None
+
+
+    certain_list[index] = new_letter
+    return certain_list;
+
 
 
 if __name__ == "__main__":
