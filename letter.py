@@ -36,8 +36,7 @@ class letter():
         Author: Zesheng Xu
         Date: Feb 6 2022
         Description: A setter class to set parameter value
-        :param s: A string object with following 3 possibilities: non_exist, exist, confirmed
-                    non_exist: letter char do not exist in the word
+        :param s: A string object with following 3 possibilities:  exist, confirmed
                     exist: letter char exist but location unsure
                     confirmed: the letter char exist and its location is certain
         :return: none
@@ -54,7 +53,7 @@ class letter():
 
     def get_letter(self):
         """
-         Author: Zesheng Xu
+        Author: Zesheng Xu
         Date: Feb 6 2022
         Description: A getter class to return letter
         :return: letter
