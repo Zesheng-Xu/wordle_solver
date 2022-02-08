@@ -261,14 +261,7 @@ def get_row_result(webdriver,index):
            if letter not in temp_cert:  # prevent removal of needed words
                 to_exclude.append(letter)
         count += 1
-    for e  in range(0,len(to_exclude)):
-        # double check the to-exclude list incase if we are excluding letters that need to be included
 
-        for l in list:
-            if l != None and e < len(to_exclude):
-                if l.get_letter() == to_exclude[e]:
-                    to_exclude.pop(e)
-                    e-=1
     return to_exclude,list
 
 def check_success(certain_list):
