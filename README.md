@@ -4,12 +4,13 @@ It is now able to connect wordle website and automatically enter gueses and read
 
 # How to use
 Language Needed:
-- Python 3.8.* 
+- Python 3.8.* +
 
 Needed Python packages:
 - BeautifulSoup 4
 - Selenium 
 - Numpy
+- english-words
 
 Instruction: 
 - Download this repository 
