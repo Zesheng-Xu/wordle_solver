@@ -9,7 +9,6 @@ Language Needed:
 Needed Python packages:
 - BeautifulSoup 4
 - Selenium 
-- Numpy
 - english-words
 
 Instruction: 
