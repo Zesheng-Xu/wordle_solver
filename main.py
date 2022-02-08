@@ -151,20 +151,20 @@ def update_list(list, excluded, certain):
                     letter_count = count_occurance(letter_2.get_letter(), certain)
                     if letter_count > 1 and  word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
                         # letters needed i.e build while we need 2 L
-                        print("removed 1 ", word, "looking for " ,letter_count , letter_2.get_letter() , "it had ",word.count(letter_2.get_letter())  )
+                        print("removal 1 ", word, "looking for " ,letter_count , letter_2.get_letter() , "it had ",word.count(letter_2.get_letter())  )
                         updated_list.pop(count)
                         count -= 1
                         break
                     elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
-                            print("removed 2 ", word,"Looking for" ,letter_2.get_letter())
+                            print("removal 2 ", word,"Looking for" ,letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
                     elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
                         # location
                         if word[certain.index(letter_2)] != letter_2.get_letter():
-                            print("removed 3 ", word , word[certain.index(letter_2)], letter_2.get_letter())
+                            print("removal 3 ", word ,"Had " ,word[certain.index(letter_2)]," at where should be " ,letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
