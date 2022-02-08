@@ -66,6 +66,7 @@ def main():
                 excluded, certain, accepted = get_row_result(driver, i, certain)
                 if not accepted:
                     word_list.remove(guess)
+                    Elem.send_keys([Keys.BACKSPACE] * 6)
 
             total_excluded += excluded
 
