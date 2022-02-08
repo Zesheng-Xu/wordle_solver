@@ -59,9 +59,7 @@ def main():
 
             time.sleep(2)
 
-            combined_list = get_row_result(driver, i)  # a temp tuple
-            excluded += combined_list[0]
-            certain = combined_list[1]
+            excluded, certain = get_row_result(driver, i)
 
             """
             Following were for local testing of the word guessing algorithm
@@ -192,6 +190,7 @@ def count_occurance(letter, letter_list):
     return count
 
 
+# DEPRECATED
 def letter_object_set_Value(certain_list, new_letter, index):
     """
     Author: Zesheng Xu
@@ -228,7 +227,7 @@ def get_row_result(webdriver, index):
     :return: to_exclude - letters to exclude from the gusses
     """
     to_exclude = []
-    list = [None, None, None, None, None]
+    lst = [None] * 5
     temp_cert = []
     # locating the game-row through the series of shadow roots - I hate this
     host = webdriver.find_element(By.TAG_NAME, "game-app")
@@ -239,32 +238,24 @@ def get_row_result(webdriver, index):
 
     bs_text = BeautifulSoup(row, 'html.parser')
 
-    count = 0
-    for tile in bs_text.findAll('game-tile'):  # goes through each tile in the row
+    for index, tile in enumerate(bs_text.findAll('game-tile')):  # goes through each tile in the row
         letter = tile.get('letter')
-        eval = tile.get('evaluation')
+        status = tile.get('evaluation')
 
-        if(eval == "present"):
+        if(status == "present"):
             temp = letter_object(letter, "exist")
-            list[count] = temp
+            lst[index] = temp
             temp_cert.append(letter)
-        elif (eval == "correct"):
-            temp = letter_object(letter, "confirmed")
-            list[count] = temp
-            temp_cert.append(letter)
-        elif (eval == "absent"):
-           if letter not in temp_cert:  # prevent removal of needed words
-                to_exclude.append(letter)
-        count += 1
-    for e in range(0, len(to_exclude)):
-        # double check the to-exclude list incase if we are excluding letters that need to be included
 
-        for l in list:
-            if l is not None and e < len(to_exclude):
-                if l.get_letter() == to_exclude[e]:
-                    to_exclude.pop(e)
-                    e -= 1
-    return to_exclude, list
+        elif (status == "correct"):
+            temp = letter_object(letter, "confirmed")
+            lst[index] = temp
+            temp_cert.append(letter)
+
+        elif (status == "absent") and letter not in temp_cert:  # prevent removal of needed letters
+            to_exclude.append(letter)
+
+    return to_exclude, lst
 
 
 def check_success(certain_list):
