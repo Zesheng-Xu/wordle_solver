@@ -50,6 +50,7 @@ def main():
     for i in range(0,6):
         certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
 
+        if(len(word_list) > 0):
 
             guess = np.random.choice(word_list)
             guessed.append(guess)
