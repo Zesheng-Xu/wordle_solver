@@ -17,14 +17,15 @@ def main():
 
     :return: none
     """
-    word = "table"
+    word = "skill"
     word_list = load_list()
 
 
     excluded = []  # excluded letter
-    certain = [None,None,None,None,None]  # a bool array to sure if a letter's location is certain or not
     guessed = []
-    for i in range(0,5):
+    for i in range(0,6):
+        certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
+
         if(len(word_list) > 0):
             guess = np.random.choice(word_list)
             guessed.append(guess)
@@ -111,7 +112,7 @@ def update_list(list, excluded, certain):
                         count -= 1
                         break
                     elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
-                        if not letter_2.get_letter() in word:
+                        if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
                             print("removed 2 ", word,"Looking for" ,letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
