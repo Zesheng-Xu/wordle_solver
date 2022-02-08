@@ -19,8 +19,6 @@ import numpy as np
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-
-
 def main():
     """
     Author: Zesheng Xu
@@ -41,11 +39,15 @@ def main():
 
     Elem.click()
 
+
+
+
     word_list = load_list()
+
 
     excluded = []  # excluded letter
     guessed = []
-    for i in range(0, 6):
+    for i in range(0,6):
         certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
 
         if(len(word_list) > 0):
@@ -56,11 +58,13 @@ def main():
             Elem.send_keys(guess)
             Elem.send_keys(Keys.ENTER)
 
+
             time.sleep(2)
 
-            combined_list = get_row_result(driver, i)  # a temp tuple
+            combined_list = get_row_result(driver,i) # a temp tuple
             excluded += combined_list[0]
-            certain = combined_list[1]
+            certain=combined_list[1]
+
 
             """
             Following were for local testing of the word guessing algorithm
@@ -88,17 +92,16 @@ def main():
             #             if(guess[j] not in excluded):
             #                 excluded.append(guess[j])
             if(check_success(certain)):
-                print("On turn %s we successfully guessed word: %s" % (i, guess))
+                print("On turn %s we successfully guessed word: %s" %(i+1,guess))
                 break
             word_list = update_list(word_list, excluded, certain)
         else:
             print("This word is not within our dictionary")
-    print("Excluded letters: ", excluded)
-    print("Guesses words: ", guessed)
-    for i in certain:  # TODO: Check iteration source
-        if i is not None:
+    print("Excluded letters: ",excluded)
+    print("Guesses words: ",guessed)
+    for i in certain:
+        if i != None:
             print(i.get_letter(), i.get_state())
-
 
 def load_list():
     """
@@ -112,6 +115,7 @@ def load_list():
     for word in english_words_lower_alpha_set:
         if len(word) == 5:
             list.append(word)
+
 
     return list
 
@@ -134,7 +138,7 @@ def update_list(list, excluded, certain):
         removed = False  # bool variable to prevent double removal of the same word
         for letter in excluded:
             if letter in word and not removed:  # if the word have excluded letters, we remove it from the list
-                print("removed 0 ", word, "Had ", letter)
+                print("removed 0 ", word , "Had " ,letter)
                 updated_list.pop(count)
                 count -= 1
                 removed = True
@@ -144,22 +148,22 @@ def update_list(list, excluded, certain):
             for letter_2 in certain:
                 if letter_2 is not None:
                     letter_count = count_occurance(letter_2.get_letter(), certain)
-                    if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
+                    if letter_count > 1 and  word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
                         # letters needed i.e build while we need 2 L
-                        print("removed 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
+                        print("removed 1 ", word, "looking for " ,letter_count , letter_2.get_letter() , "it had ",word.count(letter_2.get_letter())  )
                         updated_list.pop(count)
                         count -= 1
                         break
                     elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
-                            print("removed 2 ", word, "Looking for", letter_2.get_letter())
+                            print("removed 2 ", word,"Looking for" ,letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
                     elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
                         # location
                         if word[certain.index(letter_2)] != letter_2.get_letter():
-                            print("removed 3 ", word, word[certain.index(letter_2)], letter_2.get_letter())
+                            print("removed 3 ", word , word[certain.index(letter_2)], letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
@@ -184,10 +188,9 @@ def count_occurance(letter, letter_list):
 
     count = 0
     for temp in letter_list:  # goes through enough letter to get their char value and compare
-        if temp is not None and temp.get_letter() == letter:
+        if temp != None and temp.get_letter() == letter:
             count += 1
     return count
-
 
 def letter_object_set_Value(certain_list, new_letter, index):
     """
@@ -196,24 +199,26 @@ def letter_object_set_Value(certain_list, new_letter, index):
     Description: systematically setting letter into certain_list, changing letter from exist to confirmed without
         duplicating it
     :param certain_list: list of letters that are in the target word
-    :param new_letter: the letter that is being added
+    :param letter_obj: the letter that is being added
     :param index: where the letter to be added
     :return: the list after process
     """
 
-    for i in range(0, len(certain_list)):
-        if certain_list[i] is not None:
+
+
+    for i in range(0,len(certain_list)):
+        if certain_list[i] != None:
             if certain_list[i].get_letter() == new_letter.get_letter() and certain_list[i].get_state() == "exist" \
                     and new_letter.get_state() == "confirmed":
                 # if the new object is confirmed and we found a letter object that is only "exist", we know that this
                 # letter needs to be updated
-                certain_list[i] == None  # TODO: Check intended purpose of statement
+                certain_list[i] == None
+
 
     certain_list[index] = new_letter
-    return certain_list
+    return certain_list;
 
-
-def get_row_result(webdriver, index):
+def get_row_result(webdriver,index):
     """
     Author: Zesheng Xu
     Date: Feb 8 2022
@@ -224,24 +229,24 @@ def get_row_result(webdriver, index):
     :return: list - a letter_object list containing the result of our previous entrance - including the state of the letter
     :return: to_exclude - letters to exclude from the gusses
     """
-    to_exclude = []
+    to_exclude= []
     list = [None, None, None, None, None]
     # locating the game-row through the series of shadow roots - I hate this
     host = webdriver.find_element(By.TAG_NAME, "game-app")
-    game = webdriver.execute_script("return arguments[0].shadowRoot.getElementById('game')", host)
+    game = webdriver.execute_script("return arguments[0].shadowRoot.getElementById('game')",host)
     board = game.find_element(By.ID, "board")
     rows = webdriver.execute_script("return arguments[0].getElementsByTagName('game-row')", board)
-    row = webdriver.execute_script("return arguments[0].shadowRoot.querySelector(""'.row').innerHTML", rows[index])
+    row = webdriver.execute_script("return arguments[0].shadowRoot.querySelector(""'.row').innerHTML",rows[index])
 
     bs_text = BeautifulSoup(row, 'html.parser')
 
     count = 0
-    for tile in bs_text.findAll('game-tile'):  # goes through each tile in the row
+    for tile in bs_text.findAll('game-tile'): # goes through each tile in the row
         letter = tile.get('letter')
         eval = tile.get('evaluation')
 
         if(eval == "present"):
-            temp = letter_object(letter, "exist")
+            temp = letter_object(letter,"exist")
             list[count] = temp
         elif (eval == "correct"):
             temp = letter_object(letter, "confirmed")
@@ -249,16 +254,15 @@ def get_row_result(webdriver, index):
         elif (eval == "absent"):
             to_exclude.append(letter)
         count += 1
-    for e in range(0, len(to_exclude)):
+    for e  in range(0,len(to_exclude)):
         # double check the to-exclude list incase if we are excluding letters that need to be included
 
         for l in list:
-            if l is not None and e < len(to_exclude):
+            if l != None and e < len(to_exclude):
                 if l.get_letter() == to_exclude[e]:
                     to_exclude.pop(e)
-                    e -= 1
-    return to_exclude, list
-
+                    e-=1
+    return to_exclude,list
 
 def check_success(certain_list):
     """
@@ -269,7 +273,7 @@ def check_success(certain_list):
     :return: True if all 5 are confirmed, else return False
     """
     for letter in certain_list:
-        if letter is None or letter.get_state() != "confirmed":
+        if letter == None or letter.get_state() != "confirmed":
             return False
     return True
 
