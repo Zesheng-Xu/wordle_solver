@@ -15,7 +15,7 @@ Instruction:
 - Download this repository 
 - Open the repository, open a terminal at this folder 
 - Type python main.py 
-- Hit ENTER and enjot :D 
+- Hit ENTER and enjoy :D 
 
 # Known Issues: 
 Some worlds in the dictionary are not within wordle vocabulary 
