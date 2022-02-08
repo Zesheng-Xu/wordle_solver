@@ -59,3 +59,9 @@ class letter_object:
         :return: letter
         """
         return self.letter
+
+    def __eq__(self, other):
+        if type(other) is letter_object:
+            return self.letter == other.letter
+        elif type(other) is str:
+            return self.letter == other
