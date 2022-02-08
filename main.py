@@ -66,7 +66,9 @@ def main():
             certain=combined_list[1]
 
 
-
+            """
+            Following were for local testing of the word guessing algorithm
+            """
             # if(guess == word):
             #     print("Success on %s try, and the word is: %s"% ( i, guess))
             #     print(guessed)
