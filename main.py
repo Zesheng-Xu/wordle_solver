@@ -103,6 +103,8 @@ def main():
     for i in certain:
         if i != None:
             print(i.get_letter(), i.get_state())
+    driver.close()
+    return
 
 def load_list():
     """
