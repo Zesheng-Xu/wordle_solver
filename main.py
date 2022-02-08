@@ -42,7 +42,6 @@ def main():
 
 
 
-    word = "frame"
     word_list = load_list()
 
 
@@ -90,12 +89,14 @@ def main():
             #         else:
             #             if(guess[j] not in excluded):
             #                 excluded.append(guess[j])
+            if(check_success(certain)):
+                print("On turn %s we successfully guessed word: %s" %(i,guess))
+                break
             word_list = update_list(word_list, excluded, certain)
         else:
             print("This word is not within our dictionary")
-    print("Target",word)
-    print("Excluded",excluded)
-    print(guessed)
+    print("Excluded letters: ",excluded)
+    print("Guesses words: ",guessed)
     for i in certain:
         if i != None:
             print(i.get_letter(), i.get_state())
@@ -217,6 +218,10 @@ def letter_object_set_Value(certain_list, new_letter, index):
 
 def get_row_result(webdriver,index):
     """
+    Author: Zesheng Xu
+    Date: Feb 8 2022
+    Description: Check latest row and retrieve the letter information such as wether a letter is correct, absent or,
+        present
     :param webdriver: The wordle website
     :param webdriver: The Row number to get
     :return: list - a letter_object list containing the result of our previous entrance - including the state of the letter
@@ -247,7 +252,28 @@ def get_row_result(webdriver,index):
         elif (eval == "absent"):
             to_exclude.append(letter)
         count += 1
+    for e  in range(0,len(to_exclude)):
+        # double check the to-exclude list incase if we are excluding letters that need to be included
+
+        for l in list:
+            if l != None and e < len(to_exclude):
+                if l.get_letter() == to_exclude[e]:
+                    to_exclude.pop(e)
+                    e-=1
     return to_exclude,list
+
+def check_success(certain_list):
+    """
+    Author: Zesheng Xu
+    Date: Feb 8 2022
+    Description: Check if we have 5 confirmed letter - that means we guesses the word
+    :param certain_list: A letter_object list where letters we know at least exists are stored
+    :return: True if all 5 are confirmed, else return False
+    """
+    for letter in certain_list:
+        if letter == None or letter.get_state() != "confirmed":
+            return False
+    return True
 
 
 if __name__ == "__main__":
