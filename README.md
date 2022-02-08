@@ -25,7 +25,6 @@ Some worlds in the dictionary are not within wordle vocabulary
 Records are not kept 
 - you dont see your past histories. 
 
-
 # todo: 
 Fix known issues
 

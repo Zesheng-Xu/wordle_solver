@@ -49,6 +49,7 @@ def main():
         certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
 
         if(len(word_list) > 0):
+
             guess = np.random.choice(word_list)
             guessed.append(guess)
 
@@ -98,6 +99,8 @@ def main():
     for i in certain:  # TODO: Check iteration source
         if i is not None:
             print(i.get_letter(), i.get_state())
+    driver.close()
+    return
 
 
 def load_list():
@@ -159,7 +162,7 @@ def update_list(list, excluded, certain):
                     elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
                         # location
                         if word[certain.index(letter_2)] != letter_2.get_letter():
-                            print("removed 3 ", word, word[certain.index(letter_2)], letter_2.get_letter())
+                            print("removal 3 ", word, "Had ", word[certain.index(letter_2)], " at where should be ", letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
@@ -226,6 +229,7 @@ def get_row_result(webdriver, index):
     """
     to_exclude = []
     list = [None, None, None, None, None]
+    temp_cert = []
     # locating the game-row through the series of shadow roots - I hate this
     host = webdriver.find_element(By.TAG_NAME, "game-app")
     game = webdriver.execute_script("return arguments[0].shadowRoot.getElementById('game')", host)
@@ -243,11 +247,14 @@ def get_row_result(webdriver, index):
         if(eval == "present"):
             temp = letter_object(letter, "exist")
             list[count] = temp
+            temp_cert.append(letter)
         elif (eval == "correct"):
             temp = letter_object(letter, "confirmed")
             list[count] = temp
+            temp_cert.append(letter)
         elif (eval == "absent"):
-            to_exclude.append(letter)
+           if letter not in temp_cert:  # prevent removal of needed words
+                to_exclude.append(letter)
         count += 1
     for e in range(0, len(to_exclude)):
         # double check the to-exclude list incase if we are excluding letters that need to be included
