@@ -96,7 +96,7 @@ def main():
             print("This word is not within our dictionary")
     print("Excluded letters: ", excluded)
     print("Guesses words: ", guessed)
-    for i in certain:  # TODO: Check iteration source
+    for i in certain:
         if i is not None:
             print(i.get_letter(), i.get_state())
     driver.close()
@@ -149,13 +149,13 @@ def update_list(list, excluded, certain):
                     letter_count = count_occurance(letter_2.get_letter(), certain)
                     if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
                         # letters needed i.e build while we need 2 L
-                        print("removed 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
+                        print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
                         updated_list.pop(count)
                         count -= 1
                         break
                     elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
-                            print("removed 2 ", word, "Looking for", letter_2.get_letter())
+                            print("removal 2 ", word, "Looking for", letter_2.get_letter())
                             updated_list.pop(count)
                             count -= 1
                             break
@@ -210,7 +210,7 @@ def letter_object_set_Value(certain_list, new_letter, index):
                     and new_letter.get_state() == "confirmed":
                 # if the new object is confirmed and we found a letter object that is only "exist", we know that this
                 # letter needs to be updated
-                certain_list[i] == None  # TODO: Check intended purpose of statement
+                certain_list[i] == None
 
     certain_list[index] = new_letter
     return certain_list
