@@ -50,7 +50,7 @@ def main():
     for i in range(0,6):
         certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
 
-        if(len(word_list) > 0):
+
             guess = np.random.choice(word_list)
             guessed.append(guess)
 
@@ -231,6 +231,7 @@ def get_row_result(webdriver,index):
     """
     to_exclude= []
     list = [None, None, None, None, None]
+    temp_cert = []
     # locating the game-row through the series of shadow roots - I hate this
     host = webdriver.find_element(By.TAG_NAME, "game-app")
     game = webdriver.execute_script("return arguments[0].shadowRoot.getElementById('game')",host)
@@ -248,11 +249,14 @@ def get_row_result(webdriver,index):
         if(eval == "present"):
             temp = letter_object(letter,"exist")
             list[count] = temp
+            temp_cert.append(letter)
         elif (eval == "correct"):
             temp = letter_object(letter, "confirmed")
             list[count] = temp
+            temp_cert.append(letter)
         elif (eval == "absent"):
-            to_exclude.append(letter)
+           if letter not in temp_cert:  # prevent removal of needed words
+                to_exclude.append(letter)
         count += 1
     for e  in range(0,len(to_exclude)):
         # double check the to-exclude list incase if we are excluding letters that need to be included
