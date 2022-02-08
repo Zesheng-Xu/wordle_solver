@@ -92,7 +92,7 @@ def main():
             #             if(guess[j] not in excluded):
             #                 excluded.append(guess[j])
             if(check_success(certain)):
-                print("On turn %s we successfully guessed word: %s" %(i,guess))
+                print("On turn %s we successfully guessed word: %s" %(i+1,guess))
                 break
             word_list = update_list(word_list, excluded, certain)
         else:
