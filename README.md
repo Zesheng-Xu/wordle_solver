@@ -25,9 +25,6 @@ Some worlds in the dictionary are not within wordle vocabulary
 Records are not kept 
 - you dont see your past histories. 
 
-Duplicated letters will cause removal of a certain letter
-- i.e Word is Frame, guess is WHIFF, there is an F that is marked excluded, which will lead to removal of Frame from word library
-
 # todo: 
 Fix known issues
 
