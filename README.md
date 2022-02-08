@@ -2,7 +2,7 @@
 A simple bot created to solve wordle challenge algorithmically. 
 It is now able to connect wordle website and automatically enter gueses and readjust based on result 
 
-#How to use
+# How to use
 Language Needed:
 - Python 3.8.* 
 
