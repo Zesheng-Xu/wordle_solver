@@ -327,7 +327,7 @@ def update_impossible_list(impossible_list,  excluded_list, certain_list):
                         
             if not removed: 
                for letter in certain_list: 
-                    if letter.get_letter() in word:  # if the word have excluded letters, we remove it from the list
+                    if letter.get_letter() in word:  # if the word have certain-ed letters, we remove it from the list
                        updated_impossible_list.pop(index)
                        index -= 1
                        removed = True
