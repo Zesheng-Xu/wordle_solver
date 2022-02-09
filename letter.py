@@ -13,9 +13,8 @@ Functions:
         return the stored letter
 """
 
-class letter_object():
-    letter = ''
-    state = ""
+
+class letter_object:
 
     def __init__(self, char, s):
         """
@@ -30,6 +29,7 @@ class letter_object():
         """
         self.letter = char
         self.state = s
+
     def set_state(self, s):
         """
         Author: Zesheng Xu
@@ -41,6 +41,7 @@ class letter_object():
         :return: none
         """
         self.state = s
+
     def get_state(self):
         """
         Author: Zesheng Xu
@@ -57,4 +58,10 @@ class letter_object():
         Description: A getter class to return letter
         :return: letter
         """
-        return  self.letter
+        return self.letter
+
+    def __eq__(self, other):
+        if type(other) is letter_object:
+            return self.letter == other.letter
+        elif type(other) is str:
+            return self.letter == other

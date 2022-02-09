@@ -9,7 +9,6 @@ Language Needed:
 Needed Python packages:
 - BeautifulSoup 4
 - Selenium 
-- Numpy
 - english-words
 
 Instruction: 
@@ -19,12 +18,10 @@ Instruction:
 - Hit ENTER and enjoy :D 
 
 # Known Issues: 
-Some worlds in the dictionary are not within wordle vocabulary 
-- causing game to not proceed properly
 
 Records are not kept 
 - you dont see your past histories. 
-
+- this is because selenium always starts a new and clean browser - i.e similar to incognito mode
 # todo: 
 Fix known issues
 
