@@ -318,6 +318,13 @@ def update_impossible_list(impossible_list,  excluded_list, certain_list):
                 index -= 1
                 removed = True
                 break
+                if not removed:  # we remove any words with duplicated letters, to maximize exploration efficiency 
+                    if word.count(letter) > 1: 
+                        updated_impossible_list.pop(index)
+                        index -= 1
+                        removed = True
+                        break
+                        
             if not removed: 
                for letter in certain_list: 
                     if letter.get_letter() in word:  # if the word have excluded letters, we remove it from the list
@@ -325,6 +332,7 @@ def update_impossible_list(impossible_list,  excluded_list, certain_list):
                        index -= 1
                        removed = True
                        break
+                
     return updated_impossible_list 
 
 def count_length( certain_list):
