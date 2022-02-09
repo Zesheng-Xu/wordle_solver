@@ -47,10 +47,11 @@ def main():
     excluded = []  # excluded letter
     total_excluded = [] # an overall storage for excluded letter for display purpose 
     guessed = [] # storing all words we guessed
-    global_certain = [None, None, None, None, None]
+    certain = [None, None, None, None, None]
+    impossible_list = update_impossible_list(impossible_list,total_excluded,certain)
     for i in range(0, 6):
         impossible_selection = False # to mark which list did it select from
-        certain = [None, None, None, None, None]  # a letter obj array to store the letters that we know either exist
+          # a letter obj array to store the letters that we know either exist
         # or confirmed
 
         if(len(word_list) > 0):
@@ -59,17 +60,17 @@ def main():
             accepted = False
             while not accepted and len(word_list) > 0: # we keeps entering until our answer was accepted by the wordle 
                
-                if (i < 2 or count_length(global_certain) < 3) and len(impossible_list) > 0 and len(word_list) > 2: # if we still need and can gather
+                if (i < 2 or count_length(certain) < 2) and len(impossible_list) > 0 and len(word_list) > 2: # if we still need and can gather
 
                     # more information
                     impossible_selection = True
                     guess = choice(impossible_list)
-                    guessed.append(guess) 
-                else:  # time to make proper guesses 
-                    guess = choice(word_list) # randomly choose a new word from word list to enter 
+                    guessed.append(guess)
+                else:  # time to make proper guesses
+                    guess = choice(word_list) # randomly choose a new word from word list to enter
                     guessed.append(guess)
 
-                print("We found this many letters:", count_length(global_certain))
+                print("We found this many letters:", count_length(certain))
                 print("There are this many possible answers:", len(word_list))
                 
                 # send guess to wordle.com
@@ -119,9 +120,10 @@ def main():
                 print("On turn %s we successfully guessed word: %s" % (i+1, guess))
                 break
             # update the lists
-            global_certain = certain.copy()
+
             word_list = update_list(word_list, excluded, certain)
-            impossible_list = update_impossible_list(impossible_list, excluded, certain )
+            impossible_list = update_impossible_list(impossible_list, total_excluded, certain)
+
         else:
             print("This word is not within our dictionary")
             break
@@ -266,6 +268,7 @@ def get_row_result(webdriver, index, cert):
     :return: accepted - A boolean indicating if the submitted word was accepted by wordle
     """
     to_exclude = []
+
     temp_cert = []
     # locating the game-row through the series of shadow roots - I hate this
     host = webdriver.find_element(By.TAG_NAME, "game-app")
@@ -301,9 +304,9 @@ def get_row_result(webdriver, index, cert):
             # prevent removal of needed letters
             to_exclude.append(letter)
 
-    for i in enumerate(to_exclude): # doucle check incase a needed word came before certain words and marked wrong
+    for i in to_exclude: # doucle check incase a needed word came before certain words and marked wrong
         if i in temp_cert:
-            to_exclude.remove(i)
+                to_exclude.remove(i)
 
     return to_exclude, cert, True
 
