@@ -9,7 +9,7 @@ Language Needed:
 Needed Python packages:
 - BeautifulSoup 4
 - Selenium 
-- english-words
+
 
 Instruction: 
 - Download this repository 
@@ -23,9 +23,9 @@ Records are not kept
 - you dont see your past histories. 
 - this is because selenium always starts a new and clean browser - i.e similar to incognito mode
 
-Curent library used for english words are lacking
-- i.e humor is not in there
 
+Trying to guess same words twice from both list: 
+- i.e Guesses words:  ['swirl', 'tonga', 'mucky', 'rumor', 'rumor', 'humor']
 # todo: 
 Fix known issues
 
