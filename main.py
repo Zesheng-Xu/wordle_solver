@@ -42,6 +42,7 @@ def main():
     Elem.click() # skip introduction
 
     word_list = load_list() # get all 5 letter words 
+    impossible_list = word_list # make a duplicate for the impossible list that we will be selecting from 
 
     excluded = []  # excluded letter
     total_excluded = [] # an overall storage for excluded letter for display purpose 
@@ -54,9 +55,15 @@ def main():
             # Handle guesses that aren't in wordle's dictionary
             accepted = False
             while not accepted and len(word_list) > 0: # we keeps entering until our answer was accepted by the wordle 
+               
+                if(i < 2 || certain.length() && len(impossible_list) > 0 )
+                
+                # TODO finish this part 
+                
                 guess = choice(word_list) # randomly choose a new word from word list to enter 
                 guessed.append(guess) 
 
+                
                 # send guess to wordle.com
                 Elem.send_keys(guess) # send the key to wordle and enter
                 Elem.send_keys(Keys.ENTER)
@@ -288,6 +295,35 @@ def check_success(certain_list):
         if letter is None or letter.get_state() != "confirmed":
             return False
     return True
+
+def update_impossible_list(impossible_list, certain_list, excluded_list):
+    """
+    Author: Zesheng Xu
+    Date: Feb 8 2022
+    Description: Get all the impossible words based on certain excluded letters and certain letters  
+    :param certain_list: A letter_object list where letters we know are in the answer 
+    :param excluded_list: A list of chars that are not within the word 
+    :return: a list of impossibe list that exclude both certain letters and excluded letters 
+    """
+    updated_impossible_list = impossible_list 
+    index = 0
+    while index < len(updated_impossible_list):  # go through each word in the word list
+        word = updated_impossible_list[index]
+        removed = False  # bool variable to prevent double removal of the same word
+        for letter in excluded_list:
+            if letter in word:  # if the word have excluded letters, we remove it from the list
+                updated_impossible_list.pop(index)
+                index -= 1
+                removed = True
+                break
+            if not removed: 
+               for letter in certain_list: 
+                    if letter.get_letter() in word:  # if the word have excluded letters, we remove it from the list
+                       updated_impossible_list.pop(index)
+                       index -= 1
+                       removed = True
+                       break
+    return updated_impossible_list 
 
 
 if __name__ == "__main__":
