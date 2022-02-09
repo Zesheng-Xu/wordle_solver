@@ -53,20 +53,20 @@ def main():
 
             # Handle guesses that aren't in wordle's dictionary
             accepted = False
-            while not accepted and len(word_list) > 0:
-                guess = choice(word_list)
-                guessed.append(guess)
+            while not accepted and len(word_list) > 0: # we keeps entering until our answer was accepted by the wordle 
+                guess = choice(word_list) # randomly choose a new word from word list to enter 
+                guessed.append(guess) 
 
                 # send guess to wordle.com
-                Elem.send_keys(guess)
+                Elem.send_keys(guess) # send the key to wordle and enter
                 Elem.send_keys(Keys.ENTER)
 
                 time.sleep(2)
 
-                excluded, certain, accepted = get_row_result(driver, i, certain)
-                if not accepted:
+                excluded, certain, accepted = get_row_result(driver, i, certain) # update excluded, certain. Accepted stores wether wordle accepts our input or not
+                if not accepted: # if the answer was rejected, we remove that word from the word list and delete our entries 
                     word_list.remove(guess)
-                    Elem.send_keys([Keys.BACKSPACE] * 6)
+                    Elem.send_keys([Keys.BACKSPACE] * 6) 
 
             total_excluded += excluded
 
@@ -161,7 +161,7 @@ def update_list(lst, excluded, certain):
                         updated_list.pop(index)
                         index -= 1
                         break
-                    elif letter_2.get_state() == "exist":  # if the word do not have the needed letters
+                    elif letter_2.get_state() == "exist":  # if the word do not have the needed letters or having that letter on where the letter currently at 
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
                             print("removal 2 ", word, "Looking for", letter_2.get_letter())
                             updated_list.pop(index)
@@ -270,7 +270,7 @@ def get_row_result(webdriver, index, cert):
             cert[letter_index] = temp
             temp_cert.append(letter)
 
-        elif (status == "absent") and letter not in temp_cert:  # prevent removal of needed letters
+        elif (status == "absent") and letter not in temp_cert:  # remove words that are absent from answer, while prevent removal of needed letters
             to_exclude.append(letter)
 
     return to_exclude, cert, True
