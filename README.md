@@ -22,6 +22,9 @@ Instruction:
 Records are not kept 
 - you dont see your past histories. 
 - this is because selenium always starts a new and clean browser - i.e similar to incognito mode
+Curent library used for english words are lacking
+- i.e humor is not in there
+
 # todo: 
 Fix known issues
 
