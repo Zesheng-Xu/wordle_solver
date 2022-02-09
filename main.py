@@ -58,8 +58,8 @@ def main():
             accepted = False
             while not accepted and len(word_list) > 0:  # we keeps entering until our answer was accepted by the wordle
 
-                if (i < 2 or cert_count < 2) and len(impossible_list) > 0 and len(
-                        word_list) > 2:  # if we still need and can gather
+                if (i < 2 or cert_count < 3) and len(impossible_list) > 0 and len(
+                        word_list) > 3:  # if we still need and can gather
 
                     # more information collection
                     guess = choice(impossible_list)
@@ -173,7 +173,7 @@ def update_list(lst, excluded, certain):
         removed = False  # bool variable to prevent double removal of the same word
         for letter in excluded:
             if letter in word:  # if the word have excluded letters, we remove it from the list
-                print("removal 0 ", word, "Had ", letter)
+                # print("removal 0 ", word, "Had ", letter)
                 updated_list.pop(index)
                 index -= 1
                 removed = True
@@ -186,8 +186,8 @@ def update_list(lst, excluded, certain):
                     if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does
                         # not have required number of
                         # letters needed i.e build while we need 2 L
-                        print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ",
-                              word.count(letter_2.get_letter()))
+                        # print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ",
+                        #       word.count(letter_2.get_letter()))
                         updated_list.pop(index)
                         index -= 1
                         break
@@ -195,15 +195,15 @@ def update_list(lst, excluded, certain):
                         # that letter on where the letter currently at
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(
                                 letter_2.get_letter()):
-                            print("removal 2 ", word, "Looking for", letter_2.get_letter())
+                            # print("removal 2 ", word, "Looking for", letter_2.get_letter())
                             updated_list.pop(index)
                             index -= 1
                             break
                     elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
                         # location
                         if word[certain.index(letter_2)] != letter_2.get_letter():
-                            print("removal 3 ", word, "Had ", word[certain.index(letter_2)], " at where should be ",
-                                  letter_2.get_letter())
+                            # print("removal 3 ", word, "Had ", word[certain.index(letter_2)], " at where should be ",
+                            #       letter_2.get_letter())
                             updated_list.pop(index)
                             index -= 1
                             break
