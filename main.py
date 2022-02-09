@@ -52,7 +52,6 @@ def main():
         certain = [None, None, None, None, None]
         impossible_list = update_impossible_list(impossible_list, total_excluded, certain)
 
-        impossible_selection = False # to mark which list did it select from
           # a letter obj array to store the letters that we know either exist
         # or confirmed
 
@@ -85,9 +84,9 @@ def main():
                 # stores wether wordle accepts our input or not
                 if not accepted: # if the answer was rejected, we remove that word from the word list and delete our
                     # entries
-                    if not impossible_selection:
+                    if guess in word_list:
                         word_list.remove(guess)
-                    else:
+                    if guess in impossible_list:
                         impossible_list.remove(guess)
                     Elem.send_keys([Keys.BACKSPACE] * 6)
 
