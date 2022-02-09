@@ -37,17 +37,17 @@ def main():
     # close  the introduction page
     time.sleep(1)
 
-    Elem = driver.find_element_by_tag_name('html')
+    Elem = driver.find_element_by_tag_name('html') # get the entire webpage 
 
-    Elem.click()
+    Elem.click() # skip introduction
 
-    word_list = load_list()
+    word_list = load_list() # get all 5 letter words 
 
     excluded = []  # excluded letter
-    total_excluded = []
-    guessed = []
+    total_excluded = [] # an overall storage for excluded letter for display purpose 
+    guessed = [] # storing all words we guessed 
     for i in range(0, 6):
-        certain = [None, None, None, None, None]  # a bool array to sure if a letter's location is certain or not
+        certain = [None, None, None, None, None]  # a letter obj array to store the letters that we know either exist or confirmed
 
         if(len(word_list) > 0):
 
@@ -61,9 +61,9 @@ def main():
                 Elem.send_keys(guess) # send the key to wordle and enter
                 Elem.send_keys(Keys.ENTER)
 
-                time.sleep(2)
+                time.sleep(2) # wait for wordle to play the annimation 
 
-                excluded, certain, accepted = get_row_result(driver, i, certain) # update excluded, certain. Accepted stores wether wordle accepts our input or not
+                excluded, certain, accepted = get_row_result(driver, i, certain) # update excluded, certain. accepted stores wether wordle accepts our input or not
                 if not accepted: # if the answer was rejected, we remove that word from the word list and delete our entries 
                     word_list.remove(guess)
                     Elem.send_keys([Keys.BACKSPACE] * 6) 
