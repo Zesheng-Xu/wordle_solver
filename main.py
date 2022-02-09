@@ -42,13 +42,16 @@ def main():
     Elem.click() # skip introduction
 
     word_list = load_list() # get all 5 letter words 
-    impossible_list = word_list # make a duplicate for the impossible list that we will be selecting from 
+    impossible_list = word_list.copy() # make a duplicate for the impossible list that we will be selecting from
 
     excluded = []  # excluded letter
     total_excluded = [] # an overall storage for excluded letter for display purpose 
-    guessed = [] # storing all words we guessed 
-    for i in range(0, 6): 
-        certain = [None, None, None, None, None]  # a letter obj array to store the letters that we know either exist or confirmed
+    guessed = [] # storing all words we guessed
+    global_certain = [None, None, None, None, None]
+    for i in range(0, 6):
+        impossible_selection = False # to mark which list did it select from
+        certain = [None, None, None, None, None]  # a letter obj array to store the letters that we know either exist
+        # or confirmed
 
         if(len(word_list) > 0):
 
@@ -56,7 +59,10 @@ def main():
             accepted = False
             while not accepted and len(word_list) > 0: # we keeps entering until our answer was accepted by the wordle 
                
-                if(i < 2 || count_length(certain) < 3 && len(impossible_list) > 0 ): # if we still need and can gather more information 
+                if (i < 2 or count_length(global_certain) < 3) and len(impossible_list) > 0 and len(word_list) > 2: # if we still need and can gather
+                    print(count_length(global_certain))
+                    # more information
+                    impossible_selection = True
                     guess = choice(impossible_list)
                     guessed.append(guess) 
                 else:  # time to make proper guesses 
@@ -70,10 +76,15 @@ def main():
 
                 time.sleep(2) # wait for wordle to play the annimation 
 
-                excluded, certain, accepted = get_row_result(driver, i, certain) # update excluded, certain. accepted stores wether wordle accepts our input or not
-                if not accepted: # if the answer was rejected, we remove that word from the word list and delete our entries 
-                    word_list.remove(guess)
-                    Elem.send_keys([Keys.BACKSPACE] * 6) 
+                excluded, certain, accepted = get_row_result(driver, i, certain) # update excluded, certain. accepted
+                # stores wether wordle accepts our input or not
+                if not accepted: # if the answer was rejected, we remove that word from the word list and delete our
+                    # entries
+                    if not impossible_selection:
+                        word_list.remove(guess)
+                    else:
+                        impossible_list.remove(guess)
+                    Elem.send_keys([Keys.BACKSPACE] * 6)
 
             total_excluded += excluded
 
@@ -105,7 +116,8 @@ def main():
             if(check_success(certain)):
                 print("On turn %s we successfully guessed word: %s" % (i+1, guess))
                 break
-            # update the lists 
+            # update the lists
+            global_certain = certain.copy()
             word_list = update_list(word_list, excluded, certain)
             impossible_list = update_impossible_list(impossible_list, excluded, certain )
         else:
@@ -164,13 +176,15 @@ def update_list(lst, excluded, certain):
             for letter_2 in certain:
                 if letter_2 is not None:
                     letter_count = certain.count(letter_2.get_letter())
-                    if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does not have required number of
+                    if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does
+                        # not have required number of
                         # letters needed i.e build while we need 2 L
                         print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
                         updated_list.pop(index)
                         index -= 1
                         break
-                    elif letter_2.get_state() == "exist":  # if the word do not have the needed letters or having that letter on where the letter currently at 
+                    elif letter_2.get_state() == "exist":  # if the word do not have the needed letters or having
+                        # that letter on where the letter currently at
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
                             print("removal 2 ", word, "Looking for", letter_2.get_letter())
                             updated_list.pop(index)
@@ -244,7 +258,8 @@ def get_row_result(webdriver, index, cert):
     :param webdriver: The wordle website
     :param webdriver: The Row number to get
     :param cert: The list of known certain letters
-    :return: list - a letter_object list containing the result of our previous entrance - including the state of the letter
+    :return: list - a letter_object list containing the result of our previous entrance
+        - including the state of the letter
     :return: to_exclude - letters to exclude from the gusses
     :return: accepted - A boolean indicating if the submitted word was accepted by wordle
     """
@@ -263,7 +278,8 @@ def get_row_result(webdriver, index, cert):
         if tile.get('evaluation') is None:
             return [], cert, False
 
-        if cert[letter_index] is not None and cert[letter_index].get_state() == 'confirmed':  # Skip already confirmed letters
+        if cert[letter_index] is not None and cert[letter_index].get_state() == 'confirmed':  # Skip already
+            # confirmed letters
             continue
 
         letter = tile.get('letter')
@@ -279,8 +295,13 @@ def get_row_result(webdriver, index, cert):
             cert[letter_index] = temp
             temp_cert.append(letter)
 
-        elif (status == "absent") and letter not in temp_cert:  # remove words that are absent from answer, while prevent removal of needed letters
+        elif (status == "absent") and letter not in temp_cert:  # remove words that are absent from answer, while
+            # prevent removal of needed letters
             to_exclude.append(letter)
+
+    for i in enumerate(to_exclude): # doucle check incase a needed word came before certain words and marked wrong
+        if i in temp_cert:
+            to_exclude.remove(i)
 
     return to_exclude, cert, True
 
@@ -307,32 +328,35 @@ def update_impossible_list(impossible_list,  excluded_list, certain_list):
     :param excluded_list: A list of chars that are not within the word 
     :return: a list of impossibe list that exclude both certain letters and excluded letters 
     """
-    updated_impossible_list = impossible_list 
+    updated_impossible_list = impossible_list.copy()
     index = 0
     while index < len(updated_impossible_list):  # go through each word in the word list
+        removed = False
+
         word = updated_impossible_list[index]
-        removed = False  # bool variable to prevent double removal of the same word
         for letter in excluded_list:
             if letter in word:  # if the word have excluded letters, we remove it from the list
                 updated_impossible_list.pop(index)
                 index -= 1
                 removed = True
                 break
-                if not removed:  # we remove any words with duplicated letters, to maximize exploration efficiency 
-                    if word.count(letter) > 1: 
+        if not removed:
+            for letter in certain_list:
+                if letter is not None:
+                    if letter.get_letter() in word:  # if the word have certain-ed letters, we remove it from the list
                         updated_impossible_list.pop(index)
                         index -= 1
                         removed = True
+
                         break
-                        
-            if not removed: 
-               for letter in certain_list: 
-                    if letter.get_letter() in word:  # if the word have certain-ed letters, we remove it from the list
-                       updated_impossible_list.pop(index)
-                       index -= 1
-                       removed = True
-                       break
-                
+        if not removed:
+            for letter_2 in word: # remove words with duplicated letters
+                if word.count(letter_2) > 1:
+                    updated_impossible_list.pop(index)
+                    index -= 1
+                    break
+        index += 1
+
     return updated_impossible_list 
 
 def count_length( certain_list):
