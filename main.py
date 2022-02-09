@@ -47,7 +47,7 @@ def main():
     excluded = []  # excluded letter
     total_excluded = [] # an overall storage for excluded letter for display purpose 
     guessed = [] # storing all words we guessed 
-    for i in range(0, 6):
+    for i in range(0, 6): 
         certain = [None, None, None, None, None]  # a letter obj array to store the letters that we know either exist or confirmed
 
         if(len(word_list) > 0):
@@ -56,12 +56,12 @@ def main():
             accepted = False
             while not accepted and len(word_list) > 0: # we keeps entering until our answer was accepted by the wordle 
                
-                if(i < 2 || certain.length() && len(impossible_list) > 0 )
-                
-                # TODO finish this part 
-                
-                guess = choice(word_list) # randomly choose a new word from word list to enter 
-                guessed.append(guess) 
+                if(i < 2 || count_length(certain) < 3 && len(impossible_list) > 0 ): # if we still need and can gather more information 
+                    guess = choice(impossible_list)
+                    guessed.append(guess) 
+                else:  # time to make proper guesses 
+                    guess = choice(word_list) # randomly choose a new word from word list to enter 
+                    guessed.append(guess) 
 
                 
                 # send guess to wordle.com
@@ -105,7 +105,9 @@ def main():
             if(check_success(certain)):
                 print("On turn %s we successfully guessed word: %s" % (i+1, guess))
                 break
+            # update the lists 
             word_list = update_list(word_list, excluded, certain)
+            impossible_list = update_impossible_list(impossible_list, excluded, certain )
         else:
             print("This word is not within our dictionary")
             break
@@ -296,7 +298,7 @@ def check_success(certain_list):
             return False
     return True
 
-def update_impossible_list(impossible_list, certain_list, excluded_list):
+def update_impossible_list(impossible_list,  excluded_list, certain_list):
     """
     Author: Zesheng Xu
     Date: Feb 8 2022
@@ -325,6 +327,19 @@ def update_impossible_list(impossible_list, certain_list, excluded_list):
                        break
     return updated_impossible_list 
 
+def count_length( certain_list):
+    """
+    Author: Zesheng Xu
+    Date: Feb 8 2022
+    Description: Get the length of the certain_list i.e count of all non None objects in the list 
+    :param certain_list: A letter_object list where letters we know are in the answer 
+    :return: a counter 
+    """
+    counter = 0 
+    for i in certain_list: 
+        if(i != None):
+            counter += 1 
+    return counter
 
 if __name__ == "__main__":
     main()
