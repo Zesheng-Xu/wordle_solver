@@ -47,9 +47,11 @@ def main():
     excluded = []  # excluded letter
     total_excluded = [] # an overall storage for excluded letter for display purpose 
     guessed = [] # storing all words we guessed
-    certain = [None, None, None, None, None]
-    impossible_list = update_impossible_list(impossible_list,total_excluded,certain)
+
     for i in range(0, 6):
+        certain = [None, None, None, None, None]
+        impossible_list = update_impossible_list(impossible_list, total_excluded, certain)
+
         impossible_selection = False # to mark which list did it select from
           # a letter obj array to store the letters that we know either exist
         # or confirmed
@@ -145,9 +147,8 @@ def load_list():
     """
     list = []
 
-    for word in english_words_lower_alpha_set:
-        if len(word) == 5:
-            list.append(word)
+    for word in open("words.txt","r").readlines():
+            list.append(word.strip("\n"))
 
     return list
 
@@ -170,7 +171,7 @@ def update_list(lst, excluded, certain):
         removed = False  # bool variable to prevent double removal of the same word
         for letter in excluded:
             if letter in word:  # if the word have excluded letters, we remove it from the list
-                # print("removal 0 ", word, "Had ", letter)
+                print("removal 0 ", word, "Had ", letter)
                 updated_list.pop(index)
                 index -= 1
                 removed = True
@@ -183,21 +184,21 @@ def update_list(lst, excluded, certain):
                     if letter_count > 1 and word.count(letter_2.get_letter()) != letter_count:  # if the word does
                         # not have required number of
                         # letters needed i.e build while we need 2 L
-                        # print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
+                        print("removal 1 ", word, "looking for ", letter_count, letter_2.get_letter(), "it had ", word.count(letter_2.get_letter()))
                         updated_list.pop(index)
                         index -= 1
                         break
                     elif letter_2.get_state() == "exist":  # if the word do not have the needed letters or having
                         # that letter on where the letter currently at
                         if not letter_2.get_letter() in word or certain.index(letter_2) == word.index(letter_2.get_letter()):
-                            # print("removal 2 ", word, "Looking for", letter_2.get_letter())
+                            print("removal 2 ", word, "Looking for", letter_2.get_letter())
                             updated_list.pop(index)
                             index -= 1
                             break
                     elif letter_2.get_state() == "confirmed":  # if the word do not have the needed letter at the needed
                         # location
                         if word[certain.index(letter_2)] != letter_2.get_letter():
-                            # print("removal 3 ", word, "Had ", word[certain.index(letter_2)], " at where should be ", letter_2.get_letter())
+                            print("removal 3 ", word, "Had ", word[certain.index(letter_2)], " at where should be ", letter_2.get_letter())
                             updated_list.pop(index)
                             index -= 1
                             break
