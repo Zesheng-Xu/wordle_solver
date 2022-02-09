@@ -45,7 +45,8 @@ def main():
     excluded = []  # excluded letter
     total_excluded = []  # an overall storage for excluded letter for display purpose
     guessed = []  # storing all words we guessed
-
+    cert_count = 0  # keep track of how many certain words we got during the phase of information collection
+    info_collection = False
     for i in range(0, 6):
         certain = [None, None, None, None, None]
         impossible_list = update_impossible_list(impossible_list, total_excluded, certain)
@@ -57,12 +58,13 @@ def main():
             accepted = False
             while not accepted and len(word_list) > 0:  # we keeps entering until our answer was accepted by the wordle
 
-                if (i < 2 or count_length(certain) < 2) and len(impossible_list) > 0 and len(
+                if (i < 2 or cert_count < 2) and len(impossible_list) > 0 and len(
                         word_list) > 2:  # if we still need and can gather
 
-                    # more information
+                    # more information collection
                     guess = choice(impossible_list)
                     guessed.append(guess)
+                    info_collection = True
                 else:  # time to make proper guesses
                     guess = choice(word_list)  # randomly choose a new word from word list to enter
                     guessed.append(guess)
@@ -77,6 +79,11 @@ def main():
                 time.sleep(2)  # wait for wordle to play the annimation
 
                 excluded, certain, accepted = get_row_result(driver, i, certain)  # update excluded, certain. accepted
+
+                # if we are still collection information, we add the new certain letters to the total number of known letters
+                if info_collection:
+                    cert_count += count_length(certain)
+
                 # stores wether wordle accepts our input or not
                 if not accepted:  # if the answer was rejected, we remove that word from the word list and delete our
                     # entries
