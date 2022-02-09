@@ -69,7 +69,7 @@ def main():
                     guess = choice(word_list)  # randomly choose a new word from word list to enter
                     guessed.append(guess)
 
-                print("We found this many letters:", count_length(certain))
+                print("We found this many letters:", cert_count)
                 print("There are this many possible answers:", len(word_list))
 
                 # send guess to wordle.com
