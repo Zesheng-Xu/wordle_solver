@@ -123,6 +123,13 @@ def main():
             if (check_success(certain)):
                 print("On turn %s we successfully guessed word: %s" % (i + 1, guess))
                 break
+            else:
+                # if game didn't end on this word, remove the word from the lists
+                if guess in word_list:
+                    word_list.remove(guess)
+                if guess in impossible_list:
+                    impossible_list.remove(guess)
+                Elem.send_keys([Keys.BACKSPACE] * 6)
             # update the lists
 
             word_list = update_list(word_list, excluded, certain)
