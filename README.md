@@ -23,9 +23,6 @@ Records are not kept
 - you dont see your past histories. 
 - this is because selenium always starts a new and clean browser - i.e similar to incognito mode
 
-
-Trying to guess same words twice from both list: 
-- i.e Guesses words:  ['swirl', 'tonga', 'mucky', 'rumor', 'rumor', 'humor']
 # todo: 
 Fix known issues
 
