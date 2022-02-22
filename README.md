@@ -1,4 +1,4 @@
-# wordle_solver - Works most of the time 
+# Wordle Solver using selenium - Works now!
 A simple bot created to solve wordle challenge algorithmically. 
 It is now able to connect wordle website and automatically enter gueses and readjust based on result 
 
