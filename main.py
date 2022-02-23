@@ -11,6 +11,7 @@ letter_object_set_Value() - updating value of the letter_object array smartly
 """
 import time
 from random import choice
+from os import path
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -29,7 +30,8 @@ def main():
     """
 
     # launch wordle website
-    driver = webdriver.Chrome("chromedriver.exe")
+
+    driver = webdriver.Chrome(path.join(path.curdir,"chromedriver.exe"))
     driver.get("https://www.powerlanguage.co.uk/wordle/")
 
     # close  the introduction page
